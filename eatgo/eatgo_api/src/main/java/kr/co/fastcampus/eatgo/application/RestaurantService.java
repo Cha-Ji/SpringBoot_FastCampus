@@ -20,7 +20,7 @@ public class RestaurantService {
     MenuItemRepository menuItemRepository;
 
     public RestaurantService(RestaurantsRepository restaurantRepository,
-                            MenuItemRepository menuItemRepository) {
+                             MenuItemRepository menuItemRepository) {
         this.restaurantRepository = restaurantRepository;
         this.menuItemRepository = menuItemRepository;
     }
@@ -30,11 +30,11 @@ public class RestaurantService {
         return restaurants;
     }
 
-    public Restaurant getRestaurant(Long id){
+    public Restaurant getRestaurant(Long id) {
         Restaurant restaurant = restaurantRepository.findById(id).orElse(null); //TODO: null일 때 예외처리가 필요
 
         List<MenuItem> menuItems = menuItemRepository.findAllByRestaurantId(id);
-        restaurant.setMenuItem(menuItems);
+        restaurant.setMenuItems(menuItems);
         return restaurant;
     }
 

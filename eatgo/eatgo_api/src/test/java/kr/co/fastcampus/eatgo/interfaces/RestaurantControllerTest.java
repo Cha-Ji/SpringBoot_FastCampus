@@ -14,6 +14,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.hamcrest.core.StringContains.containsString;
@@ -33,22 +34,17 @@ public class RestaurantControllerTest {
     @MockBean
     private RestaurantService restaurantService;
 
-//    @SpyBean(RestaurantsRepositoryImpl.class)    //컨트롤러에 원하는 객체를 주입
-//    private RestaurantsRepository restaurantsRepository;
-
-//    @SpyBean(RestaurantService.class)
-//    private RestaurantService restaurantService;
-
-//    @SpyBean(MenuItemRepositoryimpl.class)
-//    private MenuItemRepository menuItemRepository;
-
 
     @Test
     public void list() throws Exception {
 
 
         List<Restaurant> restaurants = new ArrayList<>();
-        restaurants.add(new Restaurant(1004L, "JOKER House", "Seoul"));
+        restaurants.add(Restaurant.builder()
+                .id(1004L)
+                .name("JOKER House")
+                .address("Seoul")
+                .build());
 
         given(restaurantService.getRestaurants()).willReturn(restaurants);
 
@@ -65,10 +61,22 @@ public class RestaurantControllerTest {
 
     @Test
     public void detail() throws Exception {
-        Restaurant restaurant1 = new Restaurant(1004L, "JOKER House", "Seoul");
-        restaurant1.addMenuItem(new MenuItem("Kimchi"));
+        Restaurant restaurant1 = Restaurant.builder()
+                .id(1004L)
+                .name("JOKER House")
+                .address("Seoul")
+                .build();
 
-        Restaurant restaurant2 = new Restaurant(2020L, "Cyber Food", "Seoul");
+        restaurant1.setMenuItems(Arrays.asList(
+                MenuItem.builder()
+                        .name("Kimchi")
+                        .build()));
+
+        Restaurant restaurant2 = Restaurant.builder()
+                .id(2020L)
+                .name("Cyber Food")
+                .address("Seoul")
+                .build();
 
         given(restaurantService.getRestaurant(1004L)).willReturn(restaurant1);
         given(restaurantService.getRestaurant(2020L)).willReturn(restaurant2);
@@ -96,27 +104,52 @@ public class RestaurantControllerTest {
     }
 
     @Test
-    public void create() throws Exception {
+    public void createWithValidData() throws Exception {
+        given(restaurantService.addRestaurant(any())).will(invocation -> {
+            Restaurant restaurant = invocation.getArgument(0);
+            return Restaurant.builder()
+                    .id(1234L)
+                    .name(restaurant.getName())
+                    .address(restaurant.getAddress())
+                    .build();
+        });
+
 
         mvc.perform(post("/restaurants")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"name\" : \"BeRyong\", \"address\" : \"Busan\"}"))
                 //json으로 값을 같이 넣어준다. { \ ㅁㅇㄴㄹ } 으로 내용을 넣어줘야 한다.
                 .andExpect(status().isCreated())
-                .andExpect(header().string("location","/restaurants/null")) //TODO:null을 임의로 넣어서 오류를 없앴다. 확인하자
+                .andExpect(header().string("location", "/restaurants/1234")) //TODO:null을 임의로 넣어서 오류를 없앴다. 확인하자
                 .andExpect(content().string("{}"));
 
         verify(restaurantService).addRestaurant(any());
     }
 
     @Test
-    public void update() throws Exception {
+    public void createWithInValidData() throws Exception {
+        mvc.perform(post("/restaurants")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"name\" : \",\"address\":\"}"))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void updateWithValidData() throws Exception {
         mvc.perform(patch("/restaurants/1004")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"name\" : \"JOKER Bar\", \"address\" : \"Busan\"}"))
                 .andExpect(status().isOk());
 
         verify(restaurantService).updateRestaurant(1004L, "JOKER Bar", "Busan");
+    }
+
+    @Test
+    public void updateWithInValidData() throws Exception {
+        mvc.perform(patch("/restaurants/1004")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"name\" : \"\", \"address\" : \"\"}"))
+                .andExpect(status().isBadRequest());
     }
 
 }
