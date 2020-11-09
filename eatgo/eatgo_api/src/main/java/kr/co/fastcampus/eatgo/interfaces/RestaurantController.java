@@ -18,12 +18,6 @@ import java.util.List;
 @RestController
 public class RestaurantController {
 
-//    @Autowired
-//    private RestaurantsRepository restaurantsRepository;
-//
-//    @Autowired
-//    private MenuItemRepository menuItemRepository;
-
     @Autowired
     private RestaurantService restaurantService;
 

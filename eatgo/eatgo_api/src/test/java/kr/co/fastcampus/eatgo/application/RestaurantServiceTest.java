@@ -73,7 +73,7 @@ public class RestaurantServiceTest {
     }
 
     @Test
-    public void getRestaurant() {    //레스토랑의 정보를 얻는 것
+    public void getRestaurantWithExisted() {    //레스토랑의 정보를 얻는 것
         Restaurant restaurant = restaurantService.getRestaurant(1004L);
 
         assertThat(restaurant.getId(), is(1004L));
@@ -82,6 +82,10 @@ public class RestaurantServiceTest {
 
         assertThat(menuItem.getName(), is("Kimchi"));
 
+    }
+    @Test(expected = RestaurantNotFoundException.class)
+    public void getRestaurantWithNotExisted() {    //레스토랑의 정보를 얻는 것
+        restaurantService.getRestaurant(404L);
     }
 
     @Test

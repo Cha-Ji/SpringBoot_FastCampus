@@ -60,7 +60,7 @@ public class RestaurantControllerTest {
     }
 
     @Test
-    public void detail() throws Exception {
+    public void detailWithExisted() throws Exception {
         Restaurant restaurant1 = Restaurant.builder()
                 .id(1004L)
                 .name("JOKER House")
@@ -104,6 +104,15 @@ public class RestaurantControllerTest {
     }
 
     @Test
+    public void detailWithNotExisted() throws Exception {
+        given(restaurantService.getRestaurant(404L))
+                .willThrow(new RestaurantNotFoundException(404L));
+        mvc.perform(get("/restaurants/404"))
+                .andExpect(status().isNotFound())
+                .andExpect(content().string("{}"));
+    }
+
+    @Test
     public void createWithValidData() throws Exception {
         given(restaurantService.addRestaurant(any())).will(invocation -> {
             Restaurant restaurant = invocation.getArgument(0);
@@ -120,7 +129,7 @@ public class RestaurantControllerTest {
                 .content("{\"name\" : \"BeRyong\", \"address\" : \"Busan\"}"))
                 //json으로 값을 같이 넣어준다. { \ ㅁㅇㄴㄹ } 으로 내용을 넣어줘야 한다.
                 .andExpect(status().isCreated())
-                .andExpect(header().string("location", "/restaurants/1234")) //TODO:null을 임의로 넣어서 오류를 없앴다. 확인하자
+                .andExpect(header().string("location", "/restaurants/1234"))
                 .andExpect(content().string("{}"));
 
         verify(restaurantService).addRestaurant(any());
