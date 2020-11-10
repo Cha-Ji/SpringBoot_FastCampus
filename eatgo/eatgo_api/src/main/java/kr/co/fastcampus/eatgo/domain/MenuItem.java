@@ -23,14 +23,5 @@ public class MenuItem {
     private Long restaurantId;
 
     private String name;
-//
-//    public MenuItem(String name){
-//        this.name = name;
-//    }
-//
-//
-//
-//    public String getName(){
-//        return name;
-//    }
+
 }
