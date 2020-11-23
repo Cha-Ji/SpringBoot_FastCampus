@@ -5,12 +5,17 @@ import kr.co.fastcampus.eatgo.domain.MenuItem;
 import kr.co.fastcampus.eatgo.domain.MenuItemRepository;
 import kr.co.fastcampus.eatgo.domain.Restaurant;
 import kr.co.fastcampus.eatgo.domain.RestaurantsRepository;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@Getter
+@Setter
 public class MenuItemService {
 
     private MenuItemRepository menuItemRepository;
@@ -18,6 +23,11 @@ public class MenuItemService {
     @Autowired
     public MenuItemService(MenuItemRepository menuItemRepository){
         this.menuItemRepository = menuItemRepository;
+    }
+
+    public List<MenuItem> getMenuItems(Long restaurantId){
+        return menuItemRepository.findAllByRestaurantId(restaurantId);
+
     }
 
     public void bulkUpdate(Long restaurantId, List<MenuItem> menuItems) {
@@ -35,4 +45,5 @@ public class MenuItemService {
         menuItem.setRestaurantId(restaurantId);
         menuItemRepository.save(menuItem);
     }
+
 }
