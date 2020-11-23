@@ -1,22 +1,31 @@
 package kr.co.fastcampus.eatgo.application;
 
 import kr.co.fastcampus.eatgo.domain.Review;
+import kr.co.fastcampus.eatgo.domain.ReviewRepository;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 import static org.junit.Assert.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
 
 public class ReviewServiceTests {
 
-    private ReviewServiceTests reviewService;
+    private ReviewService reviewService;
+
+    @Mock
+    private ReviewRepository reviewRepository;
+
 
     @Before
     public void setUp(){
-        reviewService
+        MockitoAnnotations.initMocks(this);
+
+        reviewService = new ReviewService(reviewRepository);
 
     }
-
-
 
 
     @Test
@@ -25,9 +34,12 @@ public class ReviewServiceTests {
         Review review = Review.builder()
                 .name("JOKER")
                 .score(3)
-                .description("Mat-it-da");
+                .description("Mat-it-da")
+                .build();
 
         reviewService.addReview(review);
+
+        verify(reviewRepository).save(any());
     }
 
 }
