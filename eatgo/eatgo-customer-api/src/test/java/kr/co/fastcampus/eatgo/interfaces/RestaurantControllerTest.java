@@ -106,53 +106,6 @@ public class RestaurantControllerTest {
                 .andExpect(content().string("{}"));
     }
 
-    @Test
-    public void createWithValidData() throws Exception {
-        given(restaurantService.addRestaurant(any())).will(invocation -> {
-            Restaurant restaurant = invocation.getArgument(0);
-            return Restaurant.builder()
-                    .id(1234L)
-                    .name(restaurant.getName())
-                    .address(restaurant.getAddress())
-                    .build();
-        });
 
-
-        mvc.perform(post("/restaurants")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"name\" : \"BeRyong\", \"address\" : \"Busan\"}"))
-                //json으로 값을 같이 넣어준다. { \ ㅁㅇㄴㄹ } 으로 내용을 넣어줘야 한다.
-                .andExpect(status().isCreated())
-                .andExpect(header().string("location", "/restaurants/1234"))
-                .andExpect(content().string("{}"));
-
-        verify(restaurantService).addRestaurant(any());
-    }
-
-    @Test
-    public void createWithInValidData() throws Exception {
-        mvc.perform(post("/restaurants")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"name\" : \",\"address\":\"}"))
-                .andExpect(status().isBadRequest());
-    }
-
-    @Test
-    public void updateWithValidData() throws Exception {
-        mvc.perform(patch("/restaurants/1004")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"name\" : \"JOKER Bar\", \"address\" : \"Busan\"}"))
-                .andExpect(status().isOk());
-
-        verify(restaurantService).updateRestaurant(1004L, "JOKER Bar", "Busan");
-    }
-
-    @Test
-    public void updateWithInValidData() throws Exception {
-        mvc.perform(patch("/restaurants/1004")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"name\" : \"\", \"address\" : \"\"}"))
-                .andExpect(status().isBadRequest());
-    }
 
 }
