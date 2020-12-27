@@ -40,11 +40,12 @@ public class RestaurantControllerTest {
         List<Restaurant> restaurants = new ArrayList<>();
         restaurants.add(Restaurant.builder()
                 .id(1004L)
+                .categoryId(1L)
                 .name("JOKER House")
                 .address("Seoul")
                 .build());
 
-        given(restaurantService.getRestaurants("Seoul"))
+        given(restaurantService.getRestaurants("Seoul",1L))
                 .willReturn(restaurants);
 
 
@@ -62,6 +63,7 @@ public class RestaurantControllerTest {
     public void detailWithExisted() throws Exception {
         Restaurant restaurant = Restaurant.builder()
                 .id(1004L)
+                .categoryId(1L)
                 .name("JOKER House")
                 .address("Seoul")
                 .build();
@@ -95,6 +97,7 @@ public class RestaurantControllerTest {
             Restaurant restaurant = invocation.getArgument(0);
             return Restaurant.builder()
                     .id(1234L)
+                    .categoryId(1L)
                     .name(restaurant.getName())
                     .address(restaurant.getAddress())
                     .build();
@@ -103,7 +106,7 @@ public class RestaurantControllerTest {
 
         mvc.perform(post("/restaurants")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"name\" : \"BeRyong\", \"address\" : \"Busan\"}"))
+                .content("{\"categoryId\":1\"name\" : \"BeRyong\", \"address\" : \"Busan\"}"))
                 //json으로 값을 같이 넣어준다. { \ ㅁㅇㄴㄹ } 으로 내용을 넣어줘야 한다.
                 .andExpect(status().isCreated())
                 .andExpect(header().string("location", "/restaurants/1234"))
@@ -124,7 +127,7 @@ public class RestaurantControllerTest {
     public void updateWithValidData() throws Exception {
         mvc.perform(patch("/restaurants/1004")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"name\" : \"JOKER Bar\", \"address\" : \"Busan\"}"))
+                .content("{\"categoryId\":1\"name\" : \"JOKER Bar\", \"address\" : \"Busan\"}"))
                 .andExpect(status().isOk());
 
         verify(restaurantService).updateRestaurant(1004L, "JOKER Bar", "Busan");
@@ -134,7 +137,7 @@ public class RestaurantControllerTest {
     public void updateWithInValidData() throws Exception {
         mvc.perform(patch("/restaurants/1004")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"name\" : \"\", \"address\" : \"\"}"))
+                .content("{\"categoryId\":1\"name\" : \"\", \"address\" : \"\"}"))
                 .andExpect(status().isBadRequest());
     }
 
