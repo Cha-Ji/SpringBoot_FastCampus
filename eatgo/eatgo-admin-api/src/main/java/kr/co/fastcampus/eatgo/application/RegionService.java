@@ -34,7 +34,4 @@ public class RegionService {
         return region;
     }
 
-//    public void setRegions(List<Region> regions) {
-//        this.regions = regions;
-//    }
 }
