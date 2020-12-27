@@ -15,6 +15,8 @@ public class Region {
 
     @Id
     @GeneratedValue
+    private Long id;
+
     private String name;
 
 }
