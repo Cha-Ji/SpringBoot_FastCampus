@@ -1,5 +1,6 @@
 package kr.co.fastcampus.eatgo.interfaces;
 
+import kr.co.fastcampus.eatgo.application.UserService;
 import kr.co.fastcampus.eatgo.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -23,13 +24,6 @@ public class UserController {
         String email = resource.getEmail();
         String name = resource.getName();
         String password = resource.getPassword();
-//
-//        User user = User.builder()
-//                .id(1004L)
-//                .email(email)
-//                .name(name)
-//                .password(password)
-//                .build();
 
         User user = userService.registerUser(email, name, password);
 
