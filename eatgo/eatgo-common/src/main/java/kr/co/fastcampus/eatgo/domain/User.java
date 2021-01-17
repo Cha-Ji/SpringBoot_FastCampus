@@ -32,6 +32,9 @@ public class User {
 
     private String password;
 
+    @Setter
+    private Long restaurantId;
+
     public Boolean isAdmin() {
         return level >= 100;
     }
@@ -43,5 +46,15 @@ public class User {
     public void deactivate() {
         level = 0L;
 
+    }
+
+    public void setRestaurantId(Long restaurantId){
+        this.restaurantId = restaurantId;
+        this.level = 50L;
+    }
+
+    public boolean isRestaurantOwner() {
+
+        return level == 50L;
     }
 }
