@@ -32,7 +32,6 @@ public class User {
 
     private String password;
 
-    @Setter
     private Long restaurantId;
 
     public Boolean isAdmin() {
